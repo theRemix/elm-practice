@@ -1,31 +1,43 @@
+-- elm-live is looking for this
+-- |------------------v
+
+
 module Main exposing (main)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import String exposing (contains)
 
 
 main =
-    allRecordsView model
+    noSportoView model
 
 
 model =
-    {-
-       TODO define model as follows:
-       * model is a record
-       * the record has two top-level fields, "query" and "results"
-       * "query" is a string with the value of "tutorial"
-       * "results" is a list of records, each of which has the
-         "id", "stars", and "name"  fields
-       * create records entries in the results list as follows:
-           1. the first record has 66 stars and a name of "TheSeamau5/elm-checkerboardgrid-tutorial"
-           2. the second record has 41 stars and a name of "grzegorzbalcerek/elm-by-example"
-           3. the third record has 35 stars and a name of "sporto/elm-tutorial-app"
-           4. the fourth record has 10 stars and a name of "jvoigtlaender/Elm-Tutorium"
-           5. the fifth record has 7 stars and a name of "sporto/elm-tutorial-assets"
-       * give each record an id, which is an integer, numbered 1 to 5
-       * be sure that the "stars" field is also an integer, not a string
-    -}
-    {}
+    { query = "tutorial"
+    , results =
+        [ { id = 1
+          , name = "TheSeamau5/elm-checkerboardgrid-tutorial"
+          , stars = 66
+          }
+        , { id = 2
+          , name = "grzegorzbalcerek/elm-by-example"
+          , stars = 41
+          }
+        , { id = 3
+          , name = "sporto/elm-tutorial-app"
+          , stars = 35
+          }
+        , { id = 4
+          , name = "jvoigtlaender/Elm-Tutorium"
+          , stars = 10
+          }
+        , { id = 5
+          , name = "sporto/elm-tutorial-assets"
+          , stars = 7
+          }
+        ]
+    }
 
 
 elmHubHeader =
@@ -38,14 +50,7 @@ elmHubHeader =
 allRecordsView model =
     div [ class "content" ]
         [ elmHubHeader
-
-        {- TODO Add an <li> to the <ul class="results"> for each record in model.results.
-           HINT: Look at the function 'viewSearchResult' below on line 50, which takes
-           a result and returns an li. Think about how you can use List.map.
-           Your goal is to replace the empty list on line 47 with a list of virtual HTML
-           li objects.
-        -}
-        , ul [ class "results" ] []
+        , ul [ class "results" ] (List.map viewSearchResult model.results)
         ]
 
 
@@ -60,35 +65,26 @@ viewSearchResult result =
 onlyOddsView model =
     div [ class "content" ]
         [ elmHubHeader
-
-        {- TODO
-           1. Begin this section only after you have completed the TODO in the allRecordsView
-              function to your satisfaction.
-           2. Go to line 7 of this file, and change the definition of 'main' to be
-              'main = onlyOddsView model'. You should now see that the list has disappeared in
-              your browser. This is because we have changed the view function we are using,
-              and this new one has an empty list for the results.
-           3. Populate the <ul> of this view only with records that have odd-numbered id fields.
-              HINT: Think of how you can use List.filter, and see also
-              http://package.elm-lang.org/packages/elm-lang/core/latest/Basics#mathematics
-              if you get stuck.
-        -}
-        , ul [ class "results" ] []
+        , ul [ class "results" ]
+            (List.map
+                viewSearchResult
+                (List.filter
+                    (\result -> result.id % 2 /= 0)
+                    model.results
+                )
+            )
         ]
 
 
 noSportoView model =
     div [ class "content" ]
         [ elmHubHeader
-
-        {- TODO
-           1. Go to line 7 of this file, and change the definition of 'main' to be
-              'main = noSportoView model'.
-           2. Populate the list only with records that represent packages NOT made
-              by the user named "sporto".
-              HINT: Think of how you can use List.filter, and see also
-              http://package.elm-lang.org/packages/elm-lang/core/5.1.1/String
-              if you get stuck.
-        -}
-        , ul [ class "results" ] []
+        , ul [ class "results" ]
+            (List.map
+                viewSearchResult
+                (List.filter
+                    (\result -> contains "sporto" result.name)
+                    model.results
+                )
+            )
         ]
